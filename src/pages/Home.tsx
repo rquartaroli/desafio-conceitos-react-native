@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { Alert } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
+import AppTheme from '../../styles/AppTheme';
+import { ThemeContext } from '../../ThemeContext';
 
 import { Header } from '../components/Header';
 import { MyTasksList } from '../components/MyTasksList';
@@ -13,6 +15,7 @@ interface Task {
 
 export function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const { theme } = useContext(ThemeContext);
 
   function handleAddTask(markTaskTitle: string) {
     if (markTaskTitle != '') {
@@ -48,7 +51,12 @@ export function Home() {
   }
 
   return (
-    <>
+    <View 
+      style={[styles.body, theme.mode === 'light' 
+        ? { backgroundColor: AppTheme.light.homeBackground } 
+        : { backgroundColor: AppTheme.dark.homeBackground }
+      ]}
+    >
       <Header />
 
       <TodoInput addTask={handleAddTask} />
@@ -58,6 +66,12 @@ export function Home() {
         onPress={handleMarkTaskAsDone} 
         onLongPress={handleRemoveTask} 
       />
-    </>
+    </View>
   )
 }
+
+const styles = StyleSheet.create({
+  body: {
+    height: '100%',
+  }
+})

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Image, Platform, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import AppTheme from '../../styles/AppTheme';
+import { ThemeContext } from '../../ThemeContext';
 
 import checkIcon from '../assets/icons/Check.png';
 
@@ -9,6 +11,7 @@ interface TodoInputProps {
 
 export function TodoInput({ addTask }: TodoInputProps) {
   const [task, setTask] = useState('');
+  const { theme } = useContext(ThemeContext);
 
   function handleAddNewTask() {
     addTask(task);
@@ -18,8 +21,12 @@ export function TodoInput({ addTask }: TodoInputProps) {
   return (
     <View style={[styles.inputContainer, Platform.OS === 'ios' ? styles.inputIOSShadow : styles.inputAndroidShadow]}>
       <TextInput 
-        style={styles.input} 
+        style={[styles.input, theme.mode === 'light' 
+          ? { backgroundColor: AppTheme.light.inputBackground, color: AppTheme.light.inputTextColor } 
+          : { backgroundColor: AppTheme.dark.inputBackground, color: AppTheme.dark.inputTextColor } 
+        ]} 
         placeholder="Adicionar novo todo..."
+        placeholderTextColor={theme.mode === 'light' ? AppTheme.light.inputTextColor : AppTheme.dark.inputTextColor}
         returnKeyType="send"
         onChangeText={setTask}
         onSubmitEditing={handleAddNewTask}
@@ -28,7 +35,10 @@ export function TodoInput({ addTask }: TodoInputProps) {
       <TouchableOpacity
         testID="add-new-task-button"
         activeOpacity={0.7}
-        style={styles.addButton}
+        style={[styles.addButton, , theme.mode === 'light' 
+          ? { backgroundColor: AppTheme.light.buttonAddBackground } 
+          : { backgroundColor: AppTheme.dark.buttonAddBackground }
+        ]}
         onPress={handleAddNewTask}
       >
         <Image source={checkIcon} />
@@ -39,7 +49,7 @@ export function TodoInput({ addTask }: TodoInputProps) {
 
 const styles = StyleSheet.create({
   inputContainer: {
-    backgroundColor: '#F5F4F8',
+    // backgroundColor: '#F5F4F8',
     borderRadius: 5,
     marginTop: -25,
     marginHorizontal: 40,
@@ -49,7 +59,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    backgroundColor: '#F5F4F8',
     paddingLeft: 12,
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
@@ -67,7 +76,6 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   addButton: {
-    backgroundColor: '#3FAD27',
     height: 50,
     paddingHorizontal: 16,
     justifyContent: 'center',
